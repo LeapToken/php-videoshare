@@ -1,48 +1,25 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $uploadDir = "videos/";
+$uploadDir = "files/";
+$pagesDir = "pages/";
 
-    if ($_FILES["video"]["type"] == "video/mp4") {
-        // Get the next available number for the filename
-        $nextNumber = 1;
-        while (file_exists($uploadDir . $nextNumber . ".mp4")) {
-            $nextNumber++;
-        }
-
-        // Rename the uploaded file to the next available number
-        $uploadFile = $uploadDir . $nextNumber . ".mp4";
-
-        if (move_uploaded_file($_FILES["video"]["tmp_name"], $uploadFile)) {
-            $videoURL = $uploadFile;
-
-            // Create a new HTML page for the uploaded video
-            $videoPage = fopen("videos/video_" . $nextNumber . ".html", "w");
-
-            // Build the HTML structure for the video page
-            $htmlContent = "<!DOCTYPE html>
-<html>
-<head>
-    <title>Video Page</title>
-</head>
-<body>
-    <h1>Video Page</h1>
-    <video controls>
-        <source src='$videoURL' type='video/mp4'>
-        Your browser does not support the video tag.
-    </video>
-</body>
-</html>";
-
-            // Write the HTML content to the new page
-            fwrite($videoPage, $htmlContent);
-            fclose($videoPage);
-
-            echo "Video uploaded successfully! <a href='videos/video_" . $nextNumber . ".html'>View Video</a>";
-        } else {
-            echo "Error uploading video.";
-        }
+if (isset($_POST["submit"])) {
+    $targetFile = $uploadDir . basename($_FILES["fileToUpload"]["name"]);
+    
+    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFile)) {
+        // File uploaded successfully, create a download page
+        $fileName = basename($targetFile);
+        $pageContent = '<html><head><title>Download Page</title></head><body>';
+        $pageContent .= "<h2>Download $fileName:</h2>";
+        $pageContent .= "<a href='../$targetFile' download>Download $fileName</a>";
+        $pageContent .= '</body></html>';
+        
+        $pageFileName = $pagesDir . uniqid() . ".html";
+        
+        file_put_contents($pageFileName, $pageContent);
+        
+        echo "File uploaded successfully. <a href='$pageFileName'>Click here</a> to access your download page.";
     } else {
-        echo "Only MP4 files are allowed.";
+        echo "Sorry, there was an error uploading your file.";
     }
 }
 ?>
