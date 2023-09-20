@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Video</title>
+    <title>File Sharing</title>
 </head>
 <body>
-    <form action="upload.php" method="POST" enctype="multipart/form-data">
-        Select video to upload:
-        <input type="file" name="videoFile" id="videoFile">
-        <input type="submit" value="Upload Video" name="submit">
+    <h1>File Sharing</h1>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+        Select a file to upload:
+        <input type="file" name="fileToUpload" id="fileToUpload">
+        <input type="submit" value="Upload File" name="submit">
     </form>
 </body>
 </html>
